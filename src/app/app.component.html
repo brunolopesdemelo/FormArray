@@ -1,0 +1,49 @@
+<form [formGroup]="form" autocomplete="off" (ngSubmit)="salvar()">
+  <ng-container formArrayName="albums">
+    <mat-table [dataSource]="albums.controls" >
+
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.get('id').value}}. </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="userId">
+        <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
+        <mat-cell *matCellDef="let element" [formGroup]="element">
+          <mat-form-field floatLabel="never">
+            <mat-select formControlName="userId" (selectionChange)="onUserChange($event, element)" required>
+              <mat-option *ngFor="let user of users" [value]="user.id">
+                {{ user.username }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+        <mat-cell *matCellDef="let element;" [formGroup]="element">
+          <mat-form-field floatLabel="never" *ngIf="element.get('userId').value !== 3">
+            <input matInput placeholder="Title" formControlName="title" required>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="acoes">
+        <mat-header-cell *matHeaderCellDef> Acoes </mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;" [formGroup]="element">
+          <button mat-mini-fab (click)="excluir(i)" aria-label="Example icon button with a home icon">
+            <mat-icon>home</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </ng-container>
+  <button mat-raised-button type="submit" color="primary">Salvar</button>
+</form>
+<code>
+  {{form.value | json}}
+</code>
