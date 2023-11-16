@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -6,6 +6,7 @@ import { FormArray, FormGroup, FormBuilder } from "@angular/forms";
 import { AlbumService } from "./album.service";
 import { UserService } from "./user.service";
 import { User } from "./user";
+import { MatTable, MatTableDataSource } from "@angular/material";
 
 @Component({
   selector: "app-root",
@@ -13,6 +14,8 @@ import { User } from "./user";
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements OnInit {
+
+  @ViewChild(MatTable) table: MatTable<any>;
   form: FormGroup;
   users: User[] = [];
   displayedColumns = ["id", "userId", "title", "acoes"];
@@ -46,7 +49,9 @@ export class AppComponent implements OnInit {
   }
 
   salvar() {
-    console.log(this.form.get("albums").invalid);
+    console.log(this.albums);
+    // this.form.markAsTouched();
+    this.albums.controls.forEach(el => el.get('title').markAsTouched())
     if (this.form.get("albums").invalid) {
       return;
     }
@@ -54,6 +59,7 @@ export class AppComponent implements OnInit {
 
   excluir(id: number) {
     this.albums.removeAt(id);
+    this.table.renderRows();
     console.log(this.form.get("albums"));
   }
 }
